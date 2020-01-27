@@ -122,37 +122,43 @@ public class JieController {
     public void doadd(@RequestHeader(value = USER_NAME) String userId,@RequestBody Map<String,Object> json) throws IOException {
         RegRespObj regRespObj = new RegRespObj();
         Topic topic = new Topic();
-        User user = new User();
-        if(topic.getId() == 0)//新增
+        User user =  userMapper.selectByPrimaryKey(Integer.parseInt(userId));
+
+        topic.setCreateTime(new Date());
+        topic.setTitle(json.get("title").toString());
+        topic.setContent(json.get("content").toString());
+        topic.setTopic_type(Integer.parseInt(json.get("type").toString()));
+        List<Map<String,Object>> lstCover = (List<Map<String, Object>>) json.get("cover");
+        if(lstCover.size() > 0)
         {
-            topic.setCreateTime(new Date());
-
-            if(topic.getKissNum() > user.getKissNum())
-            {
-                regRespObj.setStatus(1);
-//                regRespObj.setMsg("飞吻不够");
-            }
-            else
-            {
-                int result = topicMapper.insertSelective(topic);
-                user.setKissNum(user.getKissNum() - topic.getKissNum());
-                userMapper.updateByPrimaryKeySelective(user);
-                if(result > 0)
-                {
-                    regRespObj.setStatus(0);
-
-                }
-            }
+            Map<String, Object> map = lstCover.get(0);
+            topic.setCover_url1(map.get("url").toString());
         }
-        else
+        if(lstCover.size() > 1)
         {
-            int result = topicMapper.updateByPrimaryKeySelective(topic);
-
-            if(result > 0)
-            {
-                regRespObj.setStatus(0);
-            }
+            Map<String, Object> map = lstCover.get(1);
+            topic.setCover_url1(map.get("url").toString());
         }
+        if(lstCover.size() > 2)
+        {
+            Map<String, Object> map = lstCover.get(2);
+            topic.setCover_url1(map.get("url").toString());
+        }
+
+        if(topic.getTopic_type() == 2)
+        {
+            ;
+        }
+
+        int result = topicMapper.insertSelective(topic);
+
+        if(result > 0)
+        {
+            regRespObj.setStatus(0);
+
+        }
+
+
 
 //        response.getWriter().println(JSON.toJSONString(regRespObj));
     }

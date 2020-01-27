@@ -31,6 +31,60 @@ public class Topic {
 
     private String createTimeStr;
 
+
+    private String cover_url1;
+
+    private String cover_url2;
+
+    private String cover_url3;
+
+    private String video_url;
+
+    private int topic_type;
+
+
+    public String getCover_url1() {
+        return cover_url1;
+    }
+
+    public void setCover_url1(String cover_url1) {
+        this.cover_url1 = cover_url1;
+    }
+
+    public String getCover_url2() {
+        return cover_url2;
+    }
+
+    public void setCover_url2(String cover_url2) {
+        this.cover_url2 = cover_url2;
+    }
+
+    public String getCover_url3() {
+        return cover_url3;
+    }
+
+    public void setCover_url3(String cover_url3) {
+        this.cover_url3 = cover_url3;
+    }
+
+    public String getVideo_url() {
+        return video_url;
+    }
+
+    public void setVideo_url(String video_url) {
+        this.video_url = video_url;
+    }
+
+    public int getTopic_type() {
+        return topic_type;
+    }
+
+    public void setTopic_type(int topic_type) {
+        this.topic_type = topic_type;
+    }
+
+
+
     public String getCreateTimeStr() {
         return createTimeStr;
     }

@@ -163,3 +163,18 @@ create table tab_user_comment_agree(
 
 alter table tab_user add COLUMN active_code varchar(100) NOT NULL DEFAULT '';
 alter table tab_user add COLUMN active_state int(10) NOT NULL DEFAULT 0;
+
+
+alter table tab_topic add COLUMN topic_type int(1) NOT NULL DEFAULT 0;
+alter table tab_topic add COLUMN video_url varchar(200) NOT NULL DEFAULT '';
+alter table tab_topic add COLUMN cover_url1 varchar(200) NOT NULL DEFAULT '';
+alter table tab_topic add COLUMN cover_url2 varchar(200) NOT NULL DEFAULT '';
+alter table tab_topic add COLUMN cover_url3 varchar(200) NOT NULL DEFAULT '';
+
+DROP TABLE IF EXISTS `tab_topic_category_relation`;
+CREATE TABLE `tab_topic_category_relation` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `topic_id` int(11) NOT NULL DEFAULT '0',
+  `category_id` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

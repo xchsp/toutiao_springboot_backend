@@ -235,7 +235,7 @@ public class UserController {
         }
         else
         {
-            String jwt = JwtUtil.generateToken(userResult.getEmail());
+            String jwt = JwtUtil.generateToken(String.valueOf(userResult.getId()));
             Map<String,Object> dataMap =  new HashMap<String,Object>();
             dataMap.put("token",jwt);
             dataMap.put("user",userResult.getId());
