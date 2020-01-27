@@ -119,12 +119,14 @@ public class JieController {
         return modelAndView;
     }
     @PostMapping("/api/posts")
-    public void doadd(@RequestHeader(value = USER_NAME) String userId,@RequestBody Map<String,Object> json) throws IOException {
+    @ResponseBody
+    public RegRespObj doadd(@RequestHeader(value = USER_NAME) String userId,@RequestBody Map<String,Object> json) throws IOException {
         RegRespObj regRespObj = new RegRespObj();
         Topic topic = new Topic();
         User user =  userMapper.selectByPrimaryKey(Integer.parseInt(userId));
 
         topic.setCreateTime(new Date());
+        topic.setUserid(Integer.parseInt(userId));
         topic.setTitle(json.get("title").toString());
         topic.setContent(json.get("content").toString());
         topic.setTopic_type(Integer.parseInt(json.get("type").toString()));
@@ -137,12 +139,12 @@ public class JieController {
         if(lstCover.size() > 1)
         {
             Map<String, Object> map = lstCover.get(1);
-            topic.setCover_url1(map.get("url").toString());
+            topic.setCover_url2(map.get("url").toString());
         }
         if(lstCover.size() > 2)
         {
             Map<String, Object> map = lstCover.get(2);
-            topic.setCover_url1(map.get("url").toString());
+            topic.setCover_url3(map.get("url").toString());
         }
 
         if(topic.getTopic_type() == 2)
@@ -151,6 +153,14 @@ public class JieController {
         }
 
         int result = topicMapper.insertSelective(topic);
+        List<Integer> cateLst = (ArrayList<Integer>)json.get("categories");
+        for(int cid : cateLst)
+        {
+            TopicCategoryRelation tcr = new TopicCategoryRelation();
+            tcr.setCategoryId(cid);
+            tcr.setTopicId(topic.getId());
+            topicCategoryMapper.insertTopicCategory(tcr);
+        }
 
         if(result > 0)
         {
@@ -158,7 +168,7 @@ public class JieController {
 
         }
 
-
+        return regRespObj;
 
 //        response.getWriter().println(JSON.toJSONString(regRespObj));
     }

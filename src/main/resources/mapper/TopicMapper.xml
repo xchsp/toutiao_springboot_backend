@@ -50,6 +50,9 @@
       #{content,jdbcType=LONGVARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.neusoft.domain.Topic" >
+    <selectKey keyProperty="id" order="AFTER" resultType="int">
+      select LAST_INSERT_ID()
+    </selectKey>
     insert into tab_topic
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -91,6 +94,21 @@
       <if test="content != null" >
         content,
       </if>
+      <if test="topic_type != null" >
+        topic_type,
+      </if>
+      <if test="video_url != null" >
+        video_url,
+      </if>
+      <if test="cover_url1 != null" >
+        cover_url1,
+      </if>
+      <if test="cover_url2 != null" >
+        cover_url2,
+      </if>
+      <if test="cover_url3 != null" >
+        cover_url3,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -131,6 +149,21 @@
       </if>
       <if test="content != null" >
         #{content,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="topic_type != null" >
+        #{topic_type,jdbcType=INTEGER},
+      </if>
+      <if test="video_url != null" >
+        #{video_url,jdbcType=VARCHAR},
+      </if>
+      <if test="cover_url1 != null" >
+        #{cover_url1,jdbcType=VARCHAR},
+      </if>
+      <if test="cover_url2 != null" >
+        #{cover_url2,jdbcType=VARCHAR},
+      </if>
+      <if test="cover_url3 != null" >
+        #{cover_url3,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>

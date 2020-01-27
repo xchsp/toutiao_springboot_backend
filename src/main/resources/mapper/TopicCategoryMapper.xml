@@ -41,6 +41,12 @@
       </if>
     </trim>
   </insert>
+  <insert id="insertTopicCategory" parameterType="com.neusoft.domain.TopicCategoryRelation" >
+    insert into tab_topic_category_relation (id, topic_id, category_id
+      )
+    values (#{id,jdbcType=INTEGER}, #{topicId,jdbcType=INTEGER}, #{categoryId,jdbcType=INTEGER}
+      )
+  </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.neusoft.domain.TopicCategory" >
     update tab_topic_category
     <set >

@@ -1,6 +1,7 @@
 package com.neusoft.mapper;
 
 import com.neusoft.domain.TopicCategory;
+import com.neusoft.domain.TopicCategoryRelation;
 
 import java.util.List;
 
@@ -10,6 +11,8 @@ public interface TopicCategoryMapper {
     int insert(TopicCategory record);
 
     int insertSelective(TopicCategory record);
+
+    int insertTopicCategory(TopicCategoryRelation record);
 
     TopicCategory selectByPrimaryKey(Integer id);
 
