@@ -21,4 +21,5 @@ public interface TopicCategoryMapper {
     int updateByPrimaryKey(TopicCategory record);
 
     List<TopicCategory> getAllCategories();
+    List<TopicCategory> getCategoriesByTopicID(Integer topicID);
 }

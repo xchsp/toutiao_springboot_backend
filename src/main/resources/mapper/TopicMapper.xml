@@ -20,7 +20,11 @@
   </resultMap>
   <sql id="Base_Column_List" >
     id, title, is_delete, view_times, kiss_num, is_top, is_good, is_end, comment_num, 
-    create_time, userid, topic_category_id
+    create_time, userid, topic_category_id,topic_type,
+video_url
+,cover_url1
+,cover_url2
+,cover_url3
   </sql>
   <sql id="Blob_Column_List" >
     content
@@ -263,16 +267,8 @@ where tab_topic.id = #{value}
       <if test="cid != null and cid != 0">
         and tab_topic.topic_category_id = #{cid}
       </if>
-      <if test="typeid != null and typeid != 0">
-        <if test="typeid == 1">
-          and tab_topic.is_end = 0
-        </if>
-        <if test="typeid == 2">
-          and tab_topic.is_end = 1
-        </if>
-        <if test="typeid == 3">
-          and tab_topic.is_good = 1
-        </if>
+      <if test="userid != null and userid != 0">
+        and tab_topic.userid = #{userid}
       </if>
     </where>
   </sql>
@@ -286,10 +282,10 @@ where tab_topic.id = #{value}
   </select>
 
   <select id="getPagedTopics" parameterType="PageInfo" resultType="map">
-    select tab_topic.id,tab_topic.title,tab_user.nickname,tab_user.id as userid,tab_user.pic_path
-,tab_topic.create_time,tab_topic.kiss_num, tab_topic_category.name,tab_topic.comment_num from tab_topic
+    select tab_topic.id,tab_topic.title,tab_user.nickname,tab_user.id as userid,tab_topic.video_url
+,tab_topic.create_time,tab_topic.topic_type,tab_topic.cover_url1
+    ,tab_topic.cover_url2,tab_topic.cover_url3 from tab_topic
 join tab_user on tab_topic.userid = tab_user.id
-join tab_topic_category on tab_topic.topic_category_id = tab_topic_category.id
     <include refid="topic_condition"></include>
 order by tab_topic.create_time desc
 limit #{pageStart},#{pageSize}

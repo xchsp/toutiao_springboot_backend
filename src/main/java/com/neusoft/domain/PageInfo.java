@@ -4,18 +4,18 @@ package com.neusoft.domain;
  * Created by Administrator on 2018/12/11.
  */
 public class PageInfo {
-    int pageIndex;
-    int pageSize;
-    int pageStart;
-    int cid;
-    int typeid;
+    private int pageIndex;
+    private int pageSize;
+    private int pageStart;
+    private int cid;
+    private int userid;
 
-    public int getTypeid() {
-        return typeid;
+    public int getUserid() {
+        return userid;
     }
 
-    public void setTypeid(int typeid) {
-        this.typeid = typeid;
+    public void setUserid(int userid) {
+        this.userid = userid;
     }
 
     public int getCid() {

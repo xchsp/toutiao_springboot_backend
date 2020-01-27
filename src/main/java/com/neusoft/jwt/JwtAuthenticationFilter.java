@@ -20,7 +20,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         try {
             if(isProtectedUrl(request)) {
-                System.out.println(request.getMethod());
+//                System.out.println(request.getMethod());
                 if(!request.getMethod().equals("OPTIONS"))
                     request = JwtUtil.validateTokenAndAddUserIdToHeader(request);
             }

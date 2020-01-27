@@ -67,56 +67,44 @@ public class JieController {
         modelAndView.setViewName("jie/add");
         return modelAndView;
     }
-    @RequestMapping("detail/{tid}")
-    public ModelAndView detail(@PathVariable Integer tid, HttpSession httpSession)
+    @RequestMapping("api/post/{tid}")
+    @ResponseBody
+    public Map<String,Object> detail(@PathVariable Integer tid)
     {
-
+        Map<String,Object> mapResult = new HashMap<>();
         //帖子的阅读数量加一
         Topic topic = topicMapper.selectByPrimaryKey(tid);
-        topic.setViewTimes(topic.getViewTimes() + 1);
-        topicMapper.updateByPrimaryKeySelective(topic);
+        List<TopicCategory> categories = topicCategoryMapper.getCategoriesByTopicID(tid);
+        mapResult.put("categories",categories);
 
-        ModelAndView modelAndView = new ModelAndView();
-        Map<String,Object> map = topicMapper.getTopicInfo(tid);
-
-        Date date = (Date)map.get("create_time");
-        String strDate = StringDate.getStringDate(date);
-        map.put("create_time",strDate);
-
-
-
-
-        //3.该帖的评论的赞的信息得到
-        User user = (User)httpSession.getAttribute("userinfo");
-
-        Map<String,Object> params = new HashMap<>();
-        params.put("topicid",tid);
-        if(user == null)
+        List<Map<String,Object>> covers = new ArrayList<>();
+        Map<String,Object> mapUrl = new HashMap<>();
+        if(!topic.getCover_url1().equals(""))
         {
-            params.put("userid",0);
+            mapUrl.put("url",topic.getCover_url1());
+            covers.add(mapUrl);
         }
-        else
+        if(!topic.getCover_url2().equals(""))
         {
-            params.put("userid",user.getId());
+            mapUrl = new HashMap<>();
+            mapUrl.put("url",topic.getCover_url2());
+            covers.add(mapUrl);
         }
 
-        List<Map<String,Object>> mapList = commentMapper.getCommentsByTopicID(params);
-        for(Map<String,Object> map2 : mapList)
+        if(!topic.getCover_url3().equals(""))
         {
-            Date date2 = (Date)map2.get("comment_time");
-            String strDate2 = StringDate.getStringDate(date2);
-            map2.put("comment_time",strDate2);
+            mapUrl = new HashMap<>();
+            mapUrl.put("url",topic.getCover_url3());
+            covers.add(mapUrl);
         }
 
-        List<Topic> topics = topicMapper.getTop10Topics();
+        mapResult.put("cover",covers);
 
+        mapResult.put("title",topic.getTitle());
+        mapResult.put("content",topic.getContent());
+        mapResult.put("type",topic.getTopic_type());
 
-        modelAndView.setViewName("jie/detail");
-        modelAndView.addObject("topic",map);
-        modelAndView.addObject("topics",topics);
-        modelAndView.addObject("comments",mapList);
-
-        return modelAndView;
+        return mapResult;
     }
     @PostMapping("/api/posts")
     @ResponseBody
