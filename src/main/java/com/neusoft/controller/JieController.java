@@ -103,6 +103,7 @@ public class JieController {
         mapResult.put("title",topic.getTitle());
         mapResult.put("content",topic.getContent());
         mapResult.put("type",topic.getTopic_type());
+        mapResult.put("id",topic.getId());
 
         return mapResult;
     }

@@ -116,14 +116,12 @@
   </update>
 
   <select id="getCommentsByTopicID" parameterType="map" resultType="map">
-select tab_comment.id,tab_comment.comment_content,tab_comment.comment_time,tab_comment.is_choose
- ,tab_comment.like_num,tab_user.id as userid, tab_user.nickname,tab_user.pic_path,tab_user.vip_grade
-,COALESCE(tempTab.commentid,0) as isagree
+select tab_comment.id,tab_comment.comment_content,tab_comment.comment_time,tab_user.nickname as user_nickname
 from tab_comment
-join tab_user on tab_comment.user_id = tab_user.id
-left join (select commentid from tab_user_comment_agree where userid = #{userid}) as tempTab on tempTab.commentid = tab_comment.id
-where tab_comment.topic_id = #{topicid}
-order by tab_comment.is_choose desc, tab_comment.like_num desc, tab_comment.comment_time asc
+join tab_user on tab_user.id = tab_comment.user_id
+where tab_comment.topic_id = #{topic_id}
+ORDER BY tab_comment.comment_time desc
+limit #{pageSize}
   </select>
 
   <select id="getCommentsByUserID" parameterType="int" resultType="map">

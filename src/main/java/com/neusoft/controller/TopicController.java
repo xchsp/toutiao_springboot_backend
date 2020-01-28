@@ -1,8 +1,11 @@
 package com.neusoft.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.neusoft.domain.Comment;
 import com.neusoft.domain.PageInfo;
+import com.neusoft.mapper.CommentMapper;
 import com.neusoft.mapper.TopicMapper;
+import com.neusoft.response.RegRespObj;
 import com.neusoft.util.StringDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,6 +25,9 @@ import static com.neusoft.jwt.JwtUtil.USER_NAME;
 public class TopicController {
     @Autowired
     TopicMapper topicMapper;
+
+    @Autowired
+    CommentMapper commentMapper;
 
     @GetMapping("/api/post")
     @ResponseBody
@@ -57,6 +63,43 @@ public class TopicController {
 
     }
 
+    @GetMapping("/api/post_comment/{tid}")
+    @ResponseBody
+    public List<Map<String,Object>> getPagedTopicsByCategory(@RequestHeader(value = USER_NAME) String userId
+            , @PathVariable Integer tid,Integer pageSize) throws IOException
+    {
+        if (pageSize == null)
+        {
+            pageSize = Integer.MAX_VALUE;
+        }
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("topic_id",tid);
+
+        params.put("pageSize",pageSize);
+        List<Map<String,Object>> lst = commentMapper.getCommentsByTopicID(params);
+        return lst;
+    }
+
+    @PostMapping("/api/post_comment/{tid}")
+    @ResponseBody
+    public RegRespObj postComment(@RequestHeader(value = USER_NAME) String userId
+            , @PathVariable Integer tid, @RequestBody Map<String,Object> json) throws IOException
+    {
+        RegRespObj regRespObj = new RegRespObj();
+
+        //插入评论
+        Comment comment = new Comment();
+        comment.setCommentContent(json.get("content").toString());
+        comment.setUserId(Integer.parseInt(userId));
+        comment.setCommentTime(new Date());
+        comment.setTopicId(tid);
+        commentMapper.insertSelective(comment);
+        regRespObj.setStatus(0);
+
+        return regRespObj;
+
+    }
     @GetMapping("/api/posts_cate")
     @ResponseBody
     public Map<String,Object> getPagedTopicsByCategory(@RequestHeader(value = USER_NAME) String userId, PageInfo pageInfo) throws IOException {
