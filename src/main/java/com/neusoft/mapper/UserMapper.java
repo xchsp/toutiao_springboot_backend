@@ -2,10 +2,11 @@ package com.neusoft.mapper;
 
 import com.neusoft.domain.PageInfo;
 import com.neusoft.domain.User;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
-
+@Component
 public interface UserMapper {
     int deleteByPrimaryKey(Integer id);
 

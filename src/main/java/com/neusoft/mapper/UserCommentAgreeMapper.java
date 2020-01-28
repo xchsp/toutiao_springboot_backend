@@ -1,9 +1,10 @@
 package com.neusoft.mapper;
 
 import com.neusoft.domain.UserCommentAgree;
+import org.springframework.stereotype.Component;
 
 import java.util.Map;
-
+@Component
 public interface UserCommentAgreeMapper {
     int deleteByPrimaryKey(Integer id);
 

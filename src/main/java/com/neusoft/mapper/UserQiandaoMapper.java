@@ -1,7 +1,9 @@
 package com.neusoft.mapper;
 
 import com.neusoft.domain.UserQiandao;
+import org.springframework.stereotype.Component;
 
+@Component
 public interface UserQiandaoMapper {
     int deleteByPrimaryKey(Integer id);
 

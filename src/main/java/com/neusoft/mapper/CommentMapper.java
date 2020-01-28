@@ -1,10 +1,11 @@
 package com.neusoft.mapper;
 
 import com.neusoft.domain.Comment;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
-
+@Component
 public interface CommentMapper {
     int deleteByPrimaryKey(Integer id);
 

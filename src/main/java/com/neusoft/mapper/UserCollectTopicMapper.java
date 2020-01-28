@@ -1,10 +1,11 @@
 package com.neusoft.mapper;
 
 import com.neusoft.domain.UserCollectTopic;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
-
+@Component
 public interface UserCollectTopicMapper {
     int deleteByPrimaryKey(Integer id);
 

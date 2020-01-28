@@ -2,9 +2,10 @@ package com.neusoft.mapper;
 
 import com.neusoft.domain.TopicCategory;
 import com.neusoft.domain.TopicCategoryRelation;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
-
+@Component
 public interface TopicCategoryMapper {
     int deleteByPrimaryKey(Integer id);
 
