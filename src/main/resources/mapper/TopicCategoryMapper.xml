@@ -18,6 +18,11 @@
     delete from tab_topic_category
     where id = #{id,jdbcType=INTEGER}
   </delete>
+  <delete id="deleteCategoriesByTopicID" parameterType="java.lang.Integer" >
+    delete from tab_topic_category_relation
+    where topic_id = #{id,jdbcType=INTEGER}
+  </delete>
+
   <insert id="insert" parameterType="com.neusoft.domain.TopicCategory" >
     insert into tab_topic_category (id, name)
     values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR})

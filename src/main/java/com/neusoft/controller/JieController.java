@@ -161,6 +161,71 @@ public class JieController {
 //        response.getWriter().println(JSON.toJSONString(regRespObj));
     }
 
+    @PostMapping("/api/post_update/{tid}")
+    @ResponseBody
+    public RegRespObj do_update(@RequestHeader(value = USER_NAME) String userId,@PathVariable Integer tid,@RequestBody Map<String,Object> json) throws IOException {
+        RegRespObj regRespObj = new RegRespObj();
+        Topic topic = topicMapper.selectByPrimaryKey(tid);
+        User user =  userMapper.selectByPrimaryKey(Integer.parseInt(userId));
+
+//        topic.setCreateTime(new Date());
+//        topic.setUserid(Integer.parseInt(userId));
+        topic.setTitle(json.get("title").toString());
+        topic.setContent(json.get("content").toString());
+        topic.setTopic_type(Integer.parseInt(json.get("type").toString()));
+        topic.setCover_url1("");
+        topic.setCover_url2("");
+        topic.setCover_url3("");
+        List<Map<String,Object>> lstCover = (List<Map<String, Object>>) json.get("cover");
+        if(lstCover.size() > 0)
+        {
+            Map<String, Object> map = lstCover.get(0);
+            topic.setCover_url1(map.get("url").toString());
+        }
+        if(lstCover.size() > 1)
+        {
+            Map<String, Object> map = lstCover.get(1);
+            topic.setCover_url2(map.get("url").toString());
+        }
+        if(lstCover.size() > 2)
+        {
+            Map<String, Object> map = lstCover.get(2);
+            topic.setCover_url3(map.get("url").toString());
+        }
+
+        if(topic.getTopic_type() == 2)
+        {
+            ;
+        }
+
+       int result = topicCategoryMapper.deleteCategoriesByTopicID(tid);
+//        List<TopicCategory> cateLstDel = topicCategoryMapper.getCategoriesByTopicID(tid);
+//        for(TopicCategory tc : cateLstDel)
+//        {
+//
+//        }
+
+        int res = topicMapper.updateByPrimaryKeySelective(topic);
+        List<Integer> cateLst = (ArrayList<Integer>)json.get("categories");
+        for(int cid : cateLst)
+        {
+            TopicCategoryRelation tcr = new TopicCategoryRelation();
+            tcr.setCategoryId(cid);
+            tcr.setTopicId(topic.getId());
+            topicCategoryMapper.insertTopicCategory(tcr);
+        }
+
+        if(result > 0)
+        {
+            regRespObj.setStatus(0);
+
+        }
+
+        return regRespObj;
+
+//        response.getWriter().println(JSON.toJSONString(regRespObj));
+    }
+
     @RequestMapping("reply")
     public void reply(Comment comment, String content, HttpServletRequest request, HttpServletResponse response) throws IOException {
         RegRespObj regRespObj = new RegRespObj();

@@ -210,6 +210,21 @@ video_url
       <if test="content != null" >
         content = #{content,jdbcType=LONGVARCHAR},
       </if>
+      <if test="topic_type != null" >
+        topic_type = #{topic_type,jdbcType=INTEGER},
+      </if>
+      <if test="video_url != null" >
+        video_url = #{video_url,jdbcType=VARCHAR},
+      </if>
+      <if test="cover_url1 != null" >
+        cover_url1 = #{cover_url1,jdbcType=VARCHAR},
+      </if>
+      <if test="cover_url2 != null" >
+        cover_url2 = #{cover_url2,jdbcType=VARCHAR},
+      </if>
+      <if test="cover_url3 != null" >
+        cover_url3 = #{cover_url3,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>

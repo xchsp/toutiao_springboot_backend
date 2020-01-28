@@ -23,4 +23,5 @@ public interface TopicCategoryMapper {
 
     List<TopicCategory> getAllCategories();
     List<TopicCategory> getCategoriesByTopicID(Integer topicID);
+    int deleteCategoriesByTopicID(Integer topicID);
 }
