@@ -56,4 +56,48 @@ public class TopicController {
         return map;
 
     }
+
+    @GetMapping("/api/posts_cate")
+    @ResponseBody
+    public Map<String,Object> getPagedTopicsByCategory(@RequestHeader(value = USER_NAME) String userId, PageInfo pageInfo) throws IOException {
+        pageInfo.setUserid(Integer.parseInt(userId));
+//        int total = topicMapper.getTopicTotal(pageInfo);
+        List<Map<String,Object>> mapList = topicMapper.getPagedTopicsByCategory(pageInfo);
+
+
+        for(Map<String,Object> map : mapList)
+        {
+//            Date date = (Date)map.get("create_time");
+//            String strDate = StringDate.getStringDate(date);
+//            map.put("create_time",strDate);
+            List<Map<String,Object>> covers = new ArrayList<>();
+            Map<String,Object> mapUrl = new HashMap<>();
+            if(!map.get("cover_url1").equals(""))
+            {
+                mapUrl.put("url",map.get("cover_url1"));
+                covers.add(mapUrl);
+            }
+            if(!map.get("cover_url2").equals(""))
+            {
+                mapUrl = new HashMap<>();
+                mapUrl.put("url",map.get("cover_url2"));
+                covers.add(mapUrl);
+            }
+            if(!map.get("cover_url3").equals(""))
+            {
+                mapUrl = new HashMap<>();
+                mapUrl.put("url",map.get("cover_url3"));
+                covers.add(mapUrl);
+            }
+
+            map.put("cover",covers);
+        }
+
+        Map<String,Object> map = new HashMap<>();
+//        map.put("num",total);
+        map.put("topics",mapList);
+
+        return map;
+
+    }
 }

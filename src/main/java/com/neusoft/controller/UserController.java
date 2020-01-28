@@ -246,7 +246,31 @@ public class UserController {
 
         return respMap;
     }
+    @PostMapping("login_c")
+    @ResponseBody
+    public Map<String,Object> client_login(@RequestBody User user)
+    {
+        user.setPasswd(MD5Utils.getPwd(user.getPasswd()));
+        User userResult = userMapper.selectByEmailAndPass(user);
+        Map<String,Object> respMap =  new HashMap<String,Object>();
+        if(userResult == null)
+        {
+            respMap.put("message","登录失败");
+        }
+        else
+        {
+            String jwt = JwtUtil.generateToken(String.valueOf(userResult.getId()));
+            Map<String,Object> dataMap =  new HashMap<String,Object>();
+            dataMap.put("token",jwt);
+            dataMap.put("user_id",userResult.getId());
 
+            respMap.put("message","登录成功");
+            respMap.put("statusCode","200");
+            respMap.put("data",dataMap);
+        }
+
+        return respMap;
+    }
     @RequestMapping(value = "set",method = {RequestMethod.GET})
     public String userSetting()
     {

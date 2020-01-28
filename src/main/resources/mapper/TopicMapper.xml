@@ -280,7 +280,7 @@ where tab_topic.id = #{value}
   <sql id="topic_condition">
     <where>
       <if test="cid != null and cid != 0">
-        and tab_topic.topic_category_id = #{cid}
+        and tab_topic_category.id = #{cid}
       </if>
       <if test="userid != null and userid != 0">
         and tab_topic.userid = #{userid}
@@ -304,6 +304,18 @@ join tab_user on tab_topic.userid = tab_user.id
     <include refid="topic_condition"></include>
 order by tab_topic.create_time desc
 limit #{pageStart},#{pageSize}
+  </select>
+
+  <select id="getPagedTopicsByCategory" parameterType="PageInfo" resultType="map">
+    select tab_topic.id,tab_topic.title,tab_user.nickname,tab_user.id as userid,tab_topic.video_url
+    ,tab_topic.create_time,tab_topic.topic_type,tab_topic.cover_url1
+    ,tab_topic.cover_url2,tab_topic.cover_url3 from tab_topic
+    join tab_user on tab_topic.userid = tab_user.id
+    join tab_topic_category_relation on tab_topic_category_relation.topic_id = tab_topic.id
+    join tab_topic_category on tab_topic_category.id = tab_topic_category_relation.category_id
+    <include refid="topic_condition"></include>
+    order by tab_topic.create_time desc
+    limit #{pageStart},#{pageSize}
   </select>
 
 
