@@ -23,6 +23,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
+import static com.neusoft.jwt.JwtUtil.USER_NAME;
+
 /**
  * Created by Administrator on 2018/12/6.
  */
@@ -108,32 +110,14 @@ public class UserController {
     }
 
 
-    @RequestMapping("index")
-    public ModelAndView index(HttpSession httpSession)
+    @RequestMapping("/api/user_comments")
+    @ResponseBody
+    public List<Map<String, Object>> user_comments(@RequestHeader(value = USER_NAME) String userId)
     {
-        User userLogin = (User)httpSession.getAttribute("userinfo");
-        List<Map<String,Object>> mapList = userCollectTopicMapper.getCollectionsByUserID(userLogin.getId());
 
+        List<Map<String, Object>> commentsByUserID = commentMapper.getCommentsByUserID(Integer.parseInt(userId));
 
-        List<Topic> topicList = topicMapper.getTopicsByUserID(userLogin.getId());
-
-        for(Topic topic : topicList)
-        {
-            Date date = topic.getCreateTime();
-            String strDate = StringDate.getStringDate(date);
-            topic.setCreateTimeStr(strDate);
-        }
-
-        int topic_num = topicMapper.getTopicNumByUserID(userLogin.getId());
-        int collect_num = userCollectTopicMapper.getCollectNumByUserID(userLogin.getId());
-
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("user/index");
-        modelAndView.addObject("collections",mapList);
-        modelAndView.addObject("topics",topicList);
-        modelAndView.addObject("topic_num",topic_num);
-        modelAndView.addObject("collect_num",collect_num);
-        return modelAndView;
+        return commentsByUserID;
     }
 
     @RequestMapping("api/user/{uid}")
