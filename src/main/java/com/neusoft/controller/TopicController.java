@@ -65,7 +65,7 @@ public class TopicController {
 
     @GetMapping("/api/post_comment/{tid}")
     @ResponseBody
-    public List<Map<String,Object>> getPagedTopicsByCategory(@RequestHeader(value = USER_NAME) String userId
+    public List<Map<String,Object>> getCommentsByTopicID(@RequestHeader(value = USER_NAME) String userId
             , @PathVariable Integer tid,Integer pageSize) throws IOException
     {
         if (pageSize == null)
