@@ -57,23 +57,6 @@ public class UserController {
         return "user/active";
     }
 
-    @RequestMapping("activemail/{code}")
-    public String activemail(@PathVariable String code, HttpSession session, HttpServletResponse response)
-    {
-        User user = userMapper.selectByActiveCode(code);
-        if(user != null)
-        {
-            user.setActiveState(1);
-            userMapper.updateByPrimaryKeySelective(user);
-            session.setAttribute("userinfo",user);
-            return "user/active_success";
-        }
-        else
-        {
-            return "user/active";
-        }
-
-    }
 
 
     @RequestMapping("doreg")
@@ -116,18 +99,7 @@ public class UserController {
         return regRespObj;
 
     }
-    @RequestMapping("/checkEmail")
-    @ResponseBody
-    public RegRespObj checkEmail(User user){
-        RegRespObj regRespObj = new RegRespObj();
-        User user1 = userMapper.selectByEmail(user.getEmail());
-        if(user1==null){
-//            regRespObj.setMsg("可以注册");
-        }else {
-//            regRespObj.setMsg("邮箱重复，请更换邮箱");
-        }
-        return regRespObj;
-    }
+
     @RequestMapping("logout")
     public String logout(HttpServletRequest request)
     {
@@ -135,13 +107,6 @@ public class UserController {
         return "redirect:" + request.getServletContext().getContextPath() +"/";
     }
 
-
-
-//    @RequestMapping("login")
-//    public String login()
-//    {
-//        return "user/login";
-//    }
 
     @RequestMapping("index")
     public ModelAndView index(HttpSession httpSession)
@@ -170,57 +135,15 @@ public class UserController {
         modelAndView.addObject("collect_num",collect_num);
         return modelAndView;
     }
-    @RequestMapping("message")
-    public ModelAndView message(HttpSession httpSession)
-    {
-        ModelAndView modelAndView = new ModelAndView();
-        User userLogin = (User)httpSession.getAttribute("userinfo");
-        userMessageMapper.updateUserMsgReadState(userLogin.getId());
-        List<Map<String,Object>> mapList = userMessageMapper.getMessagesByUserID(userLogin.getId());
-        for(Map<String,Object> map : mapList)
-        {
-            Date date = (Date)map.get("create_time");
-            String strDate = StringDate.getStringDate(date);
-            map.put("create_time",strDate);
-        }
 
-        modelAndView.addObject("messages",mapList);
-        modelAndView.setViewName("user/message");
-        return modelAndView;
-    }
-    @RequestMapping("jumphome/{username}")
-    public ModelAndView jumphome(@PathVariable String username)
+    @RequestMapping("api/user/{uid}")
+    @ResponseBody
+    public User getUserByID(@PathVariable Integer uid)
     {
-        User user = userMapper.selectByNickname(username);
-        ModelAndView modelAndView = home(user.getId());
-        return modelAndView;
-    }
-    @RequestMapping("home/{uid}")
-    public ModelAndView home(@PathVariable Integer uid)
-    {
-        ModelAndView modelAndView = new ModelAndView();
         User user = userMapper.selectByPrimaryKey(uid);
-        List<Topic> topicList = topicMapper.getTopicsByUserID(uid);
-
-        for(Topic topic : topicList)
-        {
-            Date date = topic.getCreateTime();
-            String strDate = StringDate.getStringDate(date);
-            topic.setCreateTimeStr(strDate);
-        }
-
-        List<Map<String,Object>> mapList = commentMapper.getCommentsByUserID(uid);
-        for(Map<String,Object> map : mapList)
-        {
-            Date date = (Date)map.get("comment_time");
-            String strDate = StringDate.getStringDate(date);
-            map.put("comment_time",strDate);
-        }
-        modelAndView.addObject("comments",mapList);
-        modelAndView.addObject("topics",topicList);
-        modelAndView.addObject("user",user);
-        modelAndView.setViewName("user/home");
-        return modelAndView;
+        System.out.println("getUserByID");
+        System.out.println(user.getPicPath());
+        return user;
     }
     @PostMapping("dologin")
     @ResponseBody
@@ -271,21 +194,20 @@ public class UserController {
 
         return respMap;
     }
-    @RequestMapping(value = "set",method = {RequestMethod.GET})
-    public String userSetting()
-    {
-        System.out.println("userSetting");
-        return "user/set";
-    }
-    @RequestMapping(value = "set",method = {RequestMethod.POST})
-    public void userUpdateSetting(User user, HttpServletResponse response, HttpSession httpSession) throws IOException {
-        User userLogin = (User)httpSession.getAttribute("userinfo");
-        user.setId(userLogin.getId());
+
+    @PostMapping("/api/user_update/{uid}")
+    @ResponseBody
+    public RegRespObj user_update(@PathVariable Integer uid,@RequestBody Map<String,Object> params) throws IOException {
+        User user = userMapper.selectByPrimaryKey(uid);
+        if(params.containsKey("picPath"))
+            user.setPicPath(params.get("picPath").toString());
         userMapper.updateByPrimaryKeySelective(user);
+        System.out.println("user_update");
+        System.out.println(user.getPicPath());
         RegRespObj regRespObj = new RegRespObj();
         regRespObj.setStatus(0);
 
-        response.getWriter().println(JSON.toJSONString(regRespObj));
+        return regRespObj;
     }
 
     @PostMapping("/api/upload")
@@ -303,7 +225,9 @@ public class UserController {
             file.transferTo(file2);
             Map<String,Object> dataMap =  new HashMap<String,Object>();
             dataMap.put("id",1);
-            dataMap.put("url","res/uploadImgs"+File.separator+uuid+file.getOriginalFilename());
+            dataMap.put("url","/res/uploadImgs"+File.separator+uuid+file.getOriginalFilename());
+            System.out.println("upload");
+            System.out.println("/res/uploadImgs"+File.separator+uuid+file.getOriginalFilename());
             regRespObj.put("data",dataMap);
         }
         else
