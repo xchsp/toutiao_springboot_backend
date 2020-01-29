@@ -201,6 +201,13 @@ public class UserController {
         User user = userMapper.selectByPrimaryKey(uid);
         if(params.containsKey("picPath"))
             user.setPicPath(params.get("picPath").toString());
+        if(params.containsKey("gender"))
+            user.setSex(Integer.parseInt(params.get("gender").toString()));
+        if(params.containsKey("password"))
+            user.setPasswd(MD5Utils.getPwd(params.get("password").toString()));
+        if(params.containsKey("nickname"))
+            user.setNickname(params.get("nickname").toString());
+
         userMapper.updateByPrimaryKeySelective(user);
         System.out.println("user_update");
         System.out.println(user.getPicPath());
