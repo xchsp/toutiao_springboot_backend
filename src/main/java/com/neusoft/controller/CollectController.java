@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.neusoft.jwt.JwtUtil.USER_NAME;
@@ -30,44 +32,63 @@ public class CollectController {
     @Autowired
     UserCollectTopicMapper userCollectTopicMapper;
 
-    @RequestMapping("find")
-    public void getCollectInfo(Integer cid, HttpSession httpSession, HttpServletResponse response) throws IOException {
-        int is_collect = 0;
-        User user = (User)httpSession.getAttribute("userinfo");
-        if(user != null)
-        {
-            Map<String,Integer> map2 = new HashMap<>();
-            map2.put("topicid",cid);
-            map2.put("userid",user.getId());
-            is_collect = userCollectTopicMapper.getIsCollectInfo(map2);
+    @RequestMapping("/api/user_star")
+    @ResponseBody
+    public  List<Map<String,Object>> getCollectInfo(@RequestHeader(value = USER_NAME) String userId) throws IOException {
+        List<Map<String,Object>> lst = userCollectTopicMapper.getCollectionsByUserID(Integer.parseInt(userId));
 
-            RegRespObj regRespObj = new RegRespObj();
-            regRespObj.setStatus(0);
-            Data data = new Data();
-//            data.setCollection(is_collect == 1 ? true : false);
-            regRespObj.setData(data);
-            response.getWriter().println(JSON.toJSONString(regRespObj));
+        for(Map<String,Object> map : lst)
+        {
+//            Date date = (Date)map.get("create_time");
+//            String strDate = StringDate.getStringDate(date);
+//            map.put("create_time",strDate);
+            List<Map<String,Object>> covers = new ArrayList<>();
+            Map<String,Object> mapUrl = new HashMap<>();
+            if(!map.get("cover_url1").equals(""))
+            {
+                mapUrl.put("url",map.get("cover_url1"));
+                covers.add(mapUrl);
+            }
+            if(!map.get("cover_url2").equals(""))
+            {
+                mapUrl = new HashMap<>();
+                mapUrl.put("url",map.get("cover_url2"));
+                covers.add(mapUrl);
+            }
+            if(!map.get("cover_url3").equals(""))
+            {
+                mapUrl = new HashMap<>();
+                mapUrl.put("url",map.get("cover_url3"));
+                covers.add(mapUrl);
+            }
+
+            map.put("cover",covers);
         }
+
+
+
+        return lst;
+
     }
 
-    @RequestMapping("remove")
-    public void removeCollectInfo(Integer cid, HttpSession httpSession, HttpServletResponse response) throws IOException {
-
-        User user = (User)httpSession.getAttribute("userinfo");
-        if(user != null)
-        {
-            Map<String,Integer> map2 = new HashMap<>();
-            map2.put("topicid",cid);
-            map2.put("userid",user.getId());
-
-            userCollectTopicMapper.delCollectInfo(map2);
-
-            RegRespObj regRespObj = new RegRespObj();
-            regRespObj.setStatus(0);
-
-            response.getWriter().println(JSON.toJSONString(regRespObj));
-        }
-    }
+//    @RequestMapping("remove")
+//    public void removeCollectInfo(Integer cid, HttpSession httpSession, HttpServletResponse response) throws IOException {
+//
+//        User user = (User)httpSession.getAttribute("userinfo");
+//        if(user != null)
+//        {
+//            Map<String,Integer> map2 = new HashMap<>();
+//            map2.put("topicid",cid);
+//            map2.put("userid",user.getId());
+//
+//            userCollectTopicMapper.delCollectInfo(map2);
+//
+//            RegRespObj regRespObj = new RegRespObj();
+//            regRespObj.setStatus(0);
+//
+//            response.getWriter().println(JSON.toJSONString(regRespObj));
+//        }
+//    }
     @RequestMapping("/api/post_star/{tid}")
     @ResponseBody
     public RegRespObj add_remove_CollectInfo(@PathVariable  Integer tid, @RequestHeader(value = USER_NAME) String userId) throws IOException {
