@@ -5,9 +5,6 @@ package com.neusoft.response;
  */
 public class RegRespObj {
     private int status;
-
-
-
     private String message;
     private int code;
     private String action;

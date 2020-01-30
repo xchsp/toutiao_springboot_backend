@@ -3,6 +3,10 @@ spring:
     view:
       prefix: /WEB-INF/jsp/
       suffix: .jsp
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 100MB
   datasource:
     url: jdbc:mysql://127.0.0.1:3306/flybbs?characterEncoding=UTF-8
     username: root

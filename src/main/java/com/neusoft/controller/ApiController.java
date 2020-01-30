@@ -6,14 +6,10 @@ import com.neusoft.response.RegRespObj;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
-import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 import static com.neusoft.jwt.JwtUtil.USER_NAME;
 
@@ -30,29 +26,29 @@ public class ApiController {
     UserTopicAgreeMapper userTopicAgreeMapper;
 
 
-    @RequestMapping("upload")
-    @ResponseBody
-    public RegRespObj upload(@RequestParam MultipartFile file, HttpServletRequest request) throws IOException {
-        RegRespObj regRespObj = new RegRespObj();
-        if(file.getSize()>0){
-            String realPath = request.getServletContext().getRealPath("/res/uploadImgs");
-            File file1 = new File(realPath);
-            if(!file1.exists()){
-                file1.mkdirs();
-            }
-            UUID uuid = UUID.randomUUID();
-            File file2 = new File(realPath+File.separator+uuid+file.getOriginalFilename());
-            file.transferTo(file2);
-
-            regRespObj.setUrl(request.getServletContext().getContextPath()+"/res/uploadImgs/"+uuid+file.getOriginalFilename());
-            regRespObj.setStatus(0);
-        }
-        else
-        {
-            regRespObj.setStatus(1);
-        }
-        return regRespObj;
-    }
+//    @RequestMapping("upload")
+//    @ResponseBody
+//    public RegRespObj upload(@RequestParam MultipartFile file, HttpServletRequest request) throws IOException {
+//        RegRespObj regRespObj = new RegRespObj();
+//        if(file.getSize()>0){
+//            String realPath = request.getServletContext().getRealPath("/res/uploadImgs");
+//            File file1 = new File(realPath);
+//            if(!file1.exists()){
+//                file1.mkdirs();
+//            }
+//            UUID uuid = UUID.randomUUID();
+//            File file2 = new File(realPath+File.separator+uuid+file.getOriginalFilename());
+//            file.transferTo(file2);
+//
+//            regRespObj.setUrl(request.getServletContext().getContextPath()+"/res/uploadImgs/"+uuid+file.getOriginalFilename());
+//            regRespObj.setStatus(0);
+//        }
+//        else
+//        {
+//            regRespObj.setStatus(1);
+//        }
+//        return regRespObj;
+//    }
 
     @RequestMapping("/post_like/{tid}")
     @ResponseBody

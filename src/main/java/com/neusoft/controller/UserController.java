@@ -51,13 +51,12 @@ public class UserController {
 
 
 
-    @RequestMapping("doreg")
+    @RequestMapping("/register")
     @ResponseBody
-    public RegRespObj doReg(User user, HttpServletRequest request) throws Exception {
+    public RegRespObj doReg(@RequestBody User user) throws Exception {
         RegRespObj regRespObj = new RegRespObj();
         User user1 = userMapper.selectByEmail(user.getEmail());
         if(user1==null){
-            user.setKissNum(100);
             user.setJoinTime(new Date());
             String passwd = user.getPasswd();
             String pwd = MD5Utils.getPwd(passwd);
@@ -65,33 +64,26 @@ public class UserController {
 
             int i = userMapper.insertSelective(user);
             if(i>0){
-                User userReg = userMapper.selectByNickname(user.getNickname());
-                //插入一条系统欢迎消息
-
-
-                request.getSession().setAttribute("userinfo",userReg);
-
                 regRespObj.setStatus(0);
-                System.out.println(request.getServletContext().getContextPath());
-                regRespObj.setAction(request.getServletContext().getContextPath() + "/");
+                regRespObj.setMessage("注册成功");
             }else {
                 regRespObj.setStatus(1);
-//                regRespObj.setMsg("数据库错误，联系管理员");
+                regRespObj.setMessage("数据库错误，联系管理员");
             }
         }else {
             regRespObj.setStatus(1);
-//            regRespObj.setMsg("邮箱重复，请换邮箱注册");
+            regRespObj.setMessage("邮箱重复");
         }
         return regRespObj;
 
     }
 
-    @RequestMapping("logout")
-    public String logout(HttpServletRequest request)
-    {
-        request.getSession().invalidate();
-        return "redirect:" + request.getServletContext().getContextPath() +"/";
-    }
+//    @RequestMapping("logout")
+//    public String logout(HttpServletRequest request)
+//    {
+//        request.getSession().invalidate();
+//        return "redirect:" + request.getServletContext().getContextPath() +"/";
+//    }
 
 
     @RequestMapping("/api/user_comments")
@@ -204,6 +196,7 @@ public class UserController {
             System.out.println("upload");
             System.out.println("/res/uploadImgs"+File.separator+uuid+file.getOriginalFilename());
             regRespObj.put("data",dataMap);
+            regRespObj.put("message","文件上传成功");
         }
         else
         {
