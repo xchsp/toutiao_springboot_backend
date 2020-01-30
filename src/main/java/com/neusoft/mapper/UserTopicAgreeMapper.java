@@ -19,7 +19,8 @@ public interface UserTopicAgreeMapper {
 
     int updateByPrimaryKey(UserTopicAgree record);
 
-    int deleteByUserIDAndTopicID(Map<String, Object> params);
+//    int deleteByUserIDAndTopicID(Map<String, Object> params);
     int getIsAgreeInfo(Map<String, Integer> map);
     int delAgreeInfo(Map<String, Integer> map);
+
 }

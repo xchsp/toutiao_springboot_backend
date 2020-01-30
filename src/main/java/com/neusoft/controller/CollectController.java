@@ -1,8 +1,11 @@
 package com.neusoft.controller;
 
 
+import com.neusoft.domain.User;
 import com.neusoft.domain.UserCollectTopic;
+import com.neusoft.domain.UserFollow;
 import com.neusoft.mapper.UserCollectTopicMapper;
+import com.neusoft.mapper.UserFollowMapper;
 import com.neusoft.response.RegRespObj;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -27,6 +30,8 @@ import static com.neusoft.jwt.JwtUtil.USER_NAME;
 public class CollectController {
     @Autowired
     UserCollectTopicMapper userCollectTopicMapper;
+    @Autowired
+    UserFollowMapper userFollowMapper;
 
     @RequestMapping("/api/user_star")
     @ResponseBody
@@ -58,8 +63,6 @@ public class CollectController {
             map.put("cover",covers);
         }
 
-
-
         return lst;
 
     }
@@ -87,5 +90,54 @@ public class CollectController {
         RegRespObj regRespObj = new RegRespObj();
         regRespObj.setStatus(0);
         return regRespObj;
+    }
+
+    @RequestMapping("/api/user_follows/{uid}")
+    @ResponseBody
+    public RegRespObj add_remove_user_follows_Info(@PathVariable  Integer uid, @RequestHeader(value = USER_NAME) String userId) throws IOException {
+
+        RegRespObj regRespObj = new RegRespObj();
+
+        if(uid == Integer.parseInt(userId))
+        {
+            regRespObj.setMessage("不能关注自己");
+            regRespObj.setStatus(1);
+            return regRespObj;
+        }
+
+        Map<String,Integer> map2 = new HashMap<>();
+        map2.put("followerid",Integer.parseInt(userId));
+        map2.put("followedid",uid);
+        int is_collect = userFollowMapper.getIsFollowedInfo(map2);
+
+
+
+        if (is_collect == 0)
+        {
+            UserFollow userCollectTopic = new UserFollow();
+            userCollectTopic.setFollowedid(uid);
+            userCollectTopic.setFollowerid(Integer.parseInt(userId));
+            userFollowMapper.insertSelective(userCollectTopic);
+            regRespObj.setMessage("关注成功");
+        }
+        else
+        {
+            userFollowMapper.delFollowedInfo(map2);
+            regRespObj.setMessage("取消关注成功");
+        }
+
+        regRespObj.setStatus(0);
+        return regRespObj;
+    }
+
+
+
+
+    @RequestMapping("/api/user_follows")
+    @ResponseBody
+    public  List<User> getFollowedInfo(@RequestHeader(value = USER_NAME) String userId) throws IOException {
+        List<User> lst = userFollowMapper.getFollowedByUserID(Integer.parseInt(userId));
+        return lst;
+
     }
 }

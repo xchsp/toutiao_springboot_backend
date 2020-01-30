@@ -151,7 +151,7 @@ public class TopicController {
     @GetMapping("/api/posts_cate")
     @ResponseBody
     public Map<String,Object> getPagedTopicsByCategory(@RequestHeader(value = USER_NAME) String userId, PageInfo pageInfo) throws IOException {
-        pageInfo.setUserid(Integer.parseInt(userId));
+//        pageInfo.setUserid(Integer.parseInt(userId));
 //        int total = topicMapper.getTopicTotal(pageInfo);
         List<Map<String,Object>> mapList = topicMapper.getPagedTopicsByCategory(pageInfo);
 

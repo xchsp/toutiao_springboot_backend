@@ -33,7 +33,8 @@ public class JieController {
     @Autowired
     UserTopicAgreeMapper userTopicAgreeMapper;
 
-
+    @Autowired
+    UserFollowMapper userFollowMapper;
 
     @RequestMapping("api/post/{tid}")
     @ResponseBody
@@ -42,6 +43,9 @@ public class JieController {
         Map<String,Object> mapResult = new HashMap<>();
         //帖子的阅读数量加一
         Topic topic = topicMapper.selectByPrimaryKey(tid);
+
+
+
         List<TopicCategory> categories = topicCategoryMapper.getCategoriesByTopicID(tid);
         mapResult.put("categories",categories);
 
@@ -84,6 +88,14 @@ public class JieController {
         mapResult.put("has_star",is_collect);
         int is_like =  userTopicAgreeMapper.getIsAgreeInfo(map2);
         mapResult.put("has_like",is_like);
+
+        Map<String,Integer> map3 = new HashMap<>();
+        map3.put("followerid",Integer.parseInt(userId));
+        map3.put("followedid",topic.getUserid());
+        int is_followed = userFollowMapper.getIsFollowedInfo(map3);
+        mapResult.put("has_follow",is_followed);
+        mapResult.put("userid",topic.getUserid());
+
         return mapResult;
     }
     @PostMapping("/api/posts")

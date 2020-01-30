@@ -184,3 +184,9 @@ create table tab_user_topic_agree(
 	userid int not null DEFAULT 0,
 	topicid int not null DEFAULT 0
 );
+
+create table tab_user_follow(
+	id int PRIMARY key not null AUTO_INCREMENT,
+	followedid int not null DEFAULT 0,
+	followerid int not null DEFAULT 0
+);
