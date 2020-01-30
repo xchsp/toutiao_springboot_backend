@@ -1,10 +1,8 @@
 package com.neusoft.controller;
 
-import com.alibaba.fastjson.JSON;
-import com.neusoft.domain.User;
+
 import com.neusoft.domain.UserCollectTopic;
 import com.neusoft.mapper.UserCollectTopicMapper;
-import com.neusoft.response.Data;
 import com.neusoft.response.RegRespObj;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,8 +11,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,7 +24,6 @@ import static com.neusoft.jwt.JwtUtil.USER_NAME;
  * Created by Administrator on 2018/12/21.
  */
 @Controller
-//@RequestMapping("collection")
 public class CollectController {
     @Autowired
     UserCollectTopicMapper userCollectTopicMapper;
@@ -39,9 +35,6 @@ public class CollectController {
 
         for(Map<String,Object> map : lst)
         {
-//            Date date = (Date)map.get("create_time");
-//            String strDate = StringDate.getStringDate(date);
-//            map.put("create_time",strDate);
             List<Map<String,Object>> covers = new ArrayList<>();
             Map<String,Object> mapUrl = new HashMap<>();
             if(!map.get("cover_url1").equals(""))
@@ -71,24 +64,6 @@ public class CollectController {
 
     }
 
-//    @RequestMapping("remove")
-//    public void removeCollectInfo(Integer cid, HttpSession httpSession, HttpServletResponse response) throws IOException {
-//
-//        User user = (User)httpSession.getAttribute("userinfo");
-//        if(user != null)
-//        {
-//            Map<String,Integer> map2 = new HashMap<>();
-//            map2.put("topicid",cid);
-//            map2.put("userid",user.getId());
-//
-//            userCollectTopicMapper.delCollectInfo(map2);
-//
-//            RegRespObj regRespObj = new RegRespObj();
-//            regRespObj.setStatus(0);
-//
-//            response.getWriter().println(JSON.toJSONString(regRespObj));
-//        }
-//    }
     @RequestMapping("/api/post_star/{tid}")
     @ResponseBody
     public RegRespObj add_remove_CollectInfo(@PathVariable  Integer tid, @RequestHeader(value = USER_NAME) String userId) throws IOException {
@@ -108,7 +83,6 @@ public class CollectController {
         {
             userCollectTopicMapper.delCollectInfo(map2);
         }
-
 
         RegRespObj regRespObj = new RegRespObj();
         regRespObj.setStatus(0);
