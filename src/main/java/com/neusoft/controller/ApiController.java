@@ -7,9 +7,7 @@ import com.neusoft.response.RegRespObj;
 import com.neusoft.util.MailUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,6 +19,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+
+import static com.neusoft.jwt.JwtUtil.USER_NAME;
 
 /**
  * Created by Administrator on 2018/12/13.
@@ -34,6 +34,9 @@ public class ApiController {
     CommentMapper commentMapper;
     @Autowired
     UserCommentAgreeMapper userCommentAgreeMapper;
+    @Autowired
+    UserTopicAgreeMapper userTopicAgreeMapper;
+
     @Autowired
     UserMapper userMapper;
     @Autowired
@@ -131,48 +134,80 @@ public class ApiController {
         return regRespObj;
     }
 
-    @RequestMapping("jieda-zan")
-    public void jiedaZan(Integer id, Boolean ok, HttpServletResponse response, HttpServletRequest request) throws IOException {
+    @RequestMapping("/post_like/{tid}")
+    @ResponseBody
+    public RegRespObj add_remove_CollectInfo(@PathVariable  Integer tid, @RequestHeader(value = USER_NAME) String userId) throws IOException {
+
+        Map<String,Integer> map2 = new HashMap<>();
+        map2.put("topicid",tid);
+        map2.put("userid",Integer.parseInt(userId));
+        int is_agree = userTopicAgreeMapper.getIsAgreeInfo(map2);
         RegRespObj regRespObj = new RegRespObj();
-        HttpSession httpSession = request.getSession();
-        User user = (User)httpSession.getAttribute("userinfo");
-        if(user != null)
+        if (is_agree == 0)
         {
-            if(ok == false)//点赞
-            {
-                //当前评论的likenum++
-                Comment comment = commentMapper.selectByPrimaryKey(id);
-                comment.setLikeNum(comment.getLikeNum() + 1);
-                commentMapper.updateByPrimaryKeySelective(comment);
-                //在tab_user_comment_agree添加一条相应的记录
-                UserCommentAgree userCommentAgree = new UserCommentAgree();
-                userCommentAgree.setCommentid(id);
-                userCommentAgree.setUserid(user.getId());
-                userCommentAgreeMapper.insertSelective(userCommentAgree);
+            UserTopicAgree userCollectTopic = new UserTopicAgree();
+            userCollectTopic.setTopic_id(tid);
+            userCollectTopic.setUserid(Integer.parseInt(userId));
+            userTopicAgreeMapper.insertSelective(userCollectTopic);
 
-            }
-            else//取消点赞
-            {
-                //当前评论的likenum--
-                Comment comment = commentMapper.selectByPrimaryKey(id);
-                comment.setLikeNum(comment.getLikeNum() - 1);
-                commentMapper.updateByPrimaryKeySelective(comment);
-                //在tab_user_comment_agree删除一条相应的记录
-
-                Map<String,Object> map = new HashMap<>();
-                map.put("userid",user.getId());
-                map.put("commentid",id);
-                userCommentAgreeMapper.deleteByUserIDAndCommentID(map);
-            }
-
+            Topic topic = topicMapper.selectByPrimaryKey(tid);
+            Integer viewTimes = topic.getViewTimes();
+            viewTimes += 1;
+            topic.setViewTimes(viewTimes);
+            topicMapper.updateByPrimaryKey(topic);
+            regRespObj.setMessage("点赞成功");
         }
         else
         {
-            regRespObj.setStatus(1);
-//            regRespObj.setMsg("未登录");
+            userTopicAgreeMapper.delAgreeInfo(map2);
+            Topic topic = topicMapper.selectByPrimaryKey(tid);
+            Integer viewTimes = topic.getViewTimes();
+            viewTimes -= 1;
+            topic.setViewTimes(viewTimes);
+            topicMapper.updateByPrimaryKey(topic);
+            regRespObj.setMessage("取消成功");
         }
 
-        response.getWriter().println(JSON.toJSONString(regRespObj));
+
+
+        regRespObj.setStatus(0);
+        return regRespObj;
     }
+//    @RequestMapping("post_like/{tid}")
+//    public void jiedaZan(@PathVariable Integer tid) throws IOException
+//    {
+//        RegRespObj regRespObj = new RegRespObj();
+//
+//        if(ok == false)//点赞
+//        {
+//            //当前评论的likenum++
+//            Comment comment = commentMapper.selectByPrimaryKey(id);
+//            comment.setLikeNum(comment.getLikeNum() + 1);
+//            commentMapper.updateByPrimaryKeySelective(comment);
+//            //在tab_user_comment_agree添加一条相应的记录
+//            UserCommentAgree userCommentAgree = new UserCommentAgree();
+//            userCommentAgree.setCommentid(id);
+//            userCommentAgree.setUserid(user.getId());
+//            userCommentAgreeMapper.insertSelective(userCommentAgree);
+//
+//        }
+//        else//取消点赞
+//        {
+//            //当前评论的likenum--
+//            Comment comment = commentMapper.selectByPrimaryKey(id);
+//            comment.setLikeNum(comment.getLikeNum() - 1);
+//            commentMapper.updateByPrimaryKeySelective(comment);
+//            //在tab_user_comment_agree删除一条相应的记录
+//
+//            Map<String,Object> map = new HashMap<>();
+//            map.put("userid",user.getId());
+//            map.put("commentid",id);
+//            userCommentAgreeMapper.deleteByUserIDAndCommentID(map);
+//        }
+//
+//
+//
+//        response.getWriter().println(JSON.toJSONString(regRespObj));
+//    }
 
 }

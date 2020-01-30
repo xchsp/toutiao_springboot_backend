@@ -39,6 +39,8 @@ public class JieController {
     UserMessageMapper userMessageMapper;
     @Autowired
     UserCollectTopicMapper userCollectTopicMapper;
+    @Autowired
+    UserTopicAgreeMapper userTopicAgreeMapper;
 
     @RequestMapping("index/{cid}/{typeid}")
     public ModelAndView index(@PathVariable Integer cid, @PathVariable Integer typeid)
@@ -109,12 +111,15 @@ public class JieController {
 
         int count = commentMapper.getCommentsCountsByTopicID(topic.getId());
         mapResult.put("comment_length",count);
+        mapResult.put("like_length",topic.getViewTimes());
+
         Map<String,Integer> map2 = new HashMap<>();
         map2.put("topicid",topic.getId());
         map2.put("userid",Integer.parseInt(userId));
         int is_collect = userCollectTopicMapper.getIsCollectInfo(map2);
         mapResult.put("has_star",is_collect);
-
+        int is_like =  userTopicAgreeMapper.getIsAgreeInfo(map2);
+        mapResult.put("has_like",is_like);
         return mapResult;
     }
     @PostMapping("/api/posts")

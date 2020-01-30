@@ -178,3 +178,9 @@ CREATE TABLE `tab_topic_category_relation` (
   `category_id` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+create table tab_user_topic_agree(
+	id int PRIMARY key not null AUTO_INCREMENT,
+	userid int not null DEFAULT 0,
+	topicid int not null DEFAULT 0
+);

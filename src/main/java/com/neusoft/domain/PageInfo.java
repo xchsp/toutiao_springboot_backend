@@ -9,6 +9,15 @@ public class PageInfo {
     private int pageStart;
     private int cid;
     private int userid;
+    private String keyword;
+
+    public String getKeyword() {
+        return keyword;
+    }
+
+    public void setKeyword(String keyword) {
+        this.keyword = keyword;
+    }
 
     public int getUserid() {
         return userid;

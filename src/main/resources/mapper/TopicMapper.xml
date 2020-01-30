@@ -285,6 +285,9 @@ where tab_topic.id = #{value}
       <if test="userid != null and userid != 0">
         and tab_topic.userid = #{userid}
       </if>
+      <if test="keyword != null and keyword != ''">
+        and (tab_topic.content like '%${keyword}%' or tab_topic.title like '%${keyword}%')
+      </if>
     </where>
   </sql>
   <select id="getTopicTotal" resultType="int" parameterType="PageInfo">

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.neusoft.mapper.UserTopicAgreeMapper" >
+  <resultMap id="BaseResultMap" type="com.neusoft.domain.UserTopicAgree" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="userid" property="userid" jdbcType="INTEGER" />
+    <result column="topicid" property="topicid" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, userid, topicid
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from tab_user_topic_agree
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from tab_user_topic_agree
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByUserIDAndTopicID" parameterType="map" >
+    delete from tab_user_topic_agree
+    where userid = #{userid} and topicid = #{topicid}
+  </delete>
+
+  <insert id="insert" parameterType="com.neusoft.domain.UserTopicAgree" >
+    insert into tab_user_topic_agree (id, userid, topicid
+      )
+    values (#{id,jdbcType=INTEGER}, #{userid,jdbcType=INTEGER}, #{topicid,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.neusoft.domain.UserTopicAgree" >
+    insert into tab_user_topic_agree
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="userid != null" >
+        userid,
+      </if>
+      <if test="topicid != null" >
+        topicid,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="topicid != null" >
+        #{topicid,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.neusoft.domain.UserTopicAgree" >
+    update tab_user_topic_agree
+    <set >
+      <if test="userid != null" >
+        userid = #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="topicid != null" >
+        topicid = #{topicid,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.neusoft.domain.UserTopicAgree" >
+    update tab_user_topic_agree
+    set userid = #{userid,jdbcType=INTEGER},
+      topicid = #{topicid,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="getIsAgreeInfo" parameterType="map" resultType="int">
+      select count(*) from tab_user_topic_agree where topicid = #{topicid} and userid = #{userid}
+  </select>
+
+  <delete id="delAgreeInfo" parameterType="map">
+      delete from tab_user_topic_agree where topicid = #{topicid} and userid = #{userid}
+  </delete>
+</mapper>

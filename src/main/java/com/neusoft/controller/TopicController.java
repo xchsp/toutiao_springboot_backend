@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
@@ -39,24 +40,75 @@ public class TopicController {
 
         for(Map<String,Object> map : mapList)
         {
-//            Date date = (Date)map.get("create_time");
-//            String strDate = StringDate.getStringDate(date);
-//            map.put("create_time",strDate);
             List<Map<String,Object>> covers = new ArrayList<>();
             Map<String,Object> mapUrl = new HashMap<>();
-            mapUrl.put("url",map.get("cover_url1").toString());
-            covers.add(mapUrl);
-            mapUrl = new HashMap<>();
-            mapUrl.put("url",map.get("cover_url2").toString());
-            covers.add(mapUrl);
-            mapUrl = new HashMap<>();
-            mapUrl.put("url",map.get("cover_url3").toString());
-            covers.add(mapUrl);
+            if(!map.get("cover_url1").equals(""))
+            {
+                mapUrl.put("url",map.get("cover_url1"));
+                covers.add(mapUrl);
+            }
+            if(!map.get("cover_url2").equals(""))
+            {
+                mapUrl = new HashMap<>();
+                mapUrl.put("url",map.get("cover_url2"));
+                covers.add(mapUrl);
+            }
+            if(!map.get("cover_url3").equals(""))
+            {
+                mapUrl = new HashMap<>();
+                mapUrl.put("url",map.get("cover_url3"));
+                covers.add(mapUrl);
+            }
+
             map.put("cover",covers);
         }
 
         Map<String,Object> map = new HashMap<>();
         map.put("num",total);
+        map.put("topics",mapList);
+
+        return map;
+
+    }
+    @GetMapping("/api/post_search")
+    @ResponseBody
+    public Map<String,Object> getSearchTopic(@RequestHeader(value = USER_NAME) String userId, HttpServletRequest request) throws IOException {
+        String keyword = request.getParameter("keyword");
+        PageInfo pageInfo = new PageInfo();
+        pageInfo.setKeyword(keyword);
+        pageInfo.setPageIndex(1);
+        pageInfo.setPageSize(100000);
+//        int total = topicMapper.getTopicTotal(pageInfo);
+        List<Map<String,Object>> mapList = topicMapper.getPagedTopics(pageInfo);
+
+
+        for(Map<String,Object> map : mapList)
+        {
+            List<Map<String,Object>> covers = new ArrayList<>();
+            Map<String,Object> mapUrl = new HashMap<>();
+            if(!map.get("cover_url1").equals(""))
+            {
+                mapUrl.put("url",map.get("cover_url1"));
+                covers.add(mapUrl);
+            }
+            if(!map.get("cover_url2").equals(""))
+            {
+                mapUrl = new HashMap<>();
+                mapUrl.put("url",map.get("cover_url2"));
+                covers.add(mapUrl);
+            }
+            if(!map.get("cover_url3").equals(""))
+            {
+                mapUrl = new HashMap<>();
+                mapUrl.put("url",map.get("cover_url3"));
+                covers.add(mapUrl);
+            }
+
+            map.put("cover",covers);
+        }
+
+        Map<String,Object> map = new HashMap<>();
+//        map.put("num",total);
         map.put("topics",mapList);
 
         return map;
@@ -110,9 +162,6 @@ public class TopicController {
 
         for(Map<String,Object> map : mapList)
         {
-//            Date date = (Date)map.get("create_time");
-//            String strDate = StringDate.getStringDate(date);
-//            map.put("create_time",strDate);
             List<Map<String,Object>> covers = new ArrayList<>();
             Map<String,Object> mapUrl = new HashMap<>();
             if(!map.get("cover_url1").equals(""))
