@@ -1,18 +1,15 @@
 package com.neusoft.controller;
 
-import com.alibaba.fastjson.JSON;
 import com.neusoft.domain.Comment;
 import com.neusoft.domain.PageInfo;
 import com.neusoft.mapper.CommentMapper;
 import com.neusoft.mapper.TopicMapper;
 import com.neusoft.response.RegRespObj;
-import com.neusoft.util.StringDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
 
@@ -22,7 +19,6 @@ import static com.neusoft.jwt.JwtUtil.USER_NAME;
  * Created by Administrator on 2018/12/12.
  */
 @Controller
-//@RequestMapping("topic")
 public class TopicController {
     @Autowired
     TopicMapper topicMapper;

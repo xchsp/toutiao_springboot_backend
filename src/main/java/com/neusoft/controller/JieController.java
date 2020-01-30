@@ -1,22 +1,14 @@
 package com.neusoft.controller;
 
-import com.alibaba.fastjson.JSON;
 import com.neusoft.domain.*;
 import com.neusoft.mapper.*;
 import com.neusoft.response.RegRespObj;
-import com.neusoft.util.StringDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static com.neusoft.jwt.JwtUtil.USER_NAME;
 

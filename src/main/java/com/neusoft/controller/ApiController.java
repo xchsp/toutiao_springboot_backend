@@ -1,21 +1,16 @@
 package com.neusoft.controller;
 
-import com.alibaba.fastjson.JSON;
 import com.neusoft.domain.*;
 import com.neusoft.mapper.*;
 import com.neusoft.response.RegRespObj;
-import com.neusoft.util.MailUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
