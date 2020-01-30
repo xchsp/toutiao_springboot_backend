@@ -33,8 +33,6 @@ public class UserController {
     @Autowired
     CommentMapper commentMapper;
 
-    @Autowired
-    UserMessageMapper userMessageMapper;
 
     @Autowired
     UserCollectTopicMapper userCollectTopicMapper;
@@ -69,13 +67,7 @@ public class UserController {
             if(i>0){
                 User userReg = userMapper.selectByNickname(user.getNickname());
                 //插入一条系统欢迎消息
-                UserMessage userMessage = new UserMessage();
-                userMessage.setCreateTime(new Date());
-                userMessage.setTopicId(-1);
-                userMessage.setMsgType(0);
-                userMessage.setTriggerMsgUserId(0);
-                userMessage.setRecvMsgUserId(userReg.getId());
-                userMessageMapper.insertSelective(userMessage);
+
 
                 request.getSession().setAttribute("userinfo",userReg);
 
